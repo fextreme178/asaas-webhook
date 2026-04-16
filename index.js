@@ -5,12 +5,11 @@ const app = express();
 app.use(express.json());
 
 app.post("/webhook/asaas", (req, res) => {
-  console.log("🔥 Webhook recebido:");
-  console.log(req.body);
+  console.log("🔥 Webhook recebido em:", new Date().toISOString());
+  console.log("Headers:", req.headers);
+  console.log("Body:", JSON.stringify(req.body, null, 2));
 
-  return res.status(200).json({
-    success: true
-  });
+  return res.status(200).json({ success: true });
 });
 
 app.get("/", (req, res) => {
