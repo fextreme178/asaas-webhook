@@ -1,4 +1,4 @@
-[14:20, 22/04/2026] Lucas Lino: import express from "express";
+import express from "express";
 
 const app = express();
 app.use(express.json());
