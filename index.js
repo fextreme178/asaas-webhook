@@ -3,8 +3,7 @@ import express from "express";
 const app = express();
 app.use(express.json());
 
-// Coloque aqui o MESMO token configurado no webhook do Asaas
-const WEBHOOK_TOKEN = "$aact_hmlg_000MzkwODA2MWY2OGM3MWRlMDU2NWM3MzJlNzZmNGZhZGY6OjQ5Y2NiOWUxLTU0MzUtNDE1ZS1iYzY5LTlkODhkNWFlMzEwMDo6JGFhY2hfZjA5MDliOGMtYzRlNi00Njg4LTk3NzItMDc5ZGQwYWVhNjA5";
+const WEBHOOK_TOKEN = process.env.WEBHOOK_TOKEN;
 
 app.get("/", (_req, res) => {
   res.send("API de webhook rodando 🚀");
