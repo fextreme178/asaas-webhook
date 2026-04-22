@@ -1,29 +1,30 @@
-import express from "express";
+[14:20, 22/04/2026] Lucas Lino: import express from "express";
 
 const app = express();
 app.use(express.json());
 
-// Tokens dos webhooks
-const PAYMENT_WEBHOOK_TOKEN = "whsec_7UcyXTcjRpbqSI9_FPQEwFO7QnCEhX4G0vH9pSVtI0Y";
-const SUBSCRIPTION_WEBHOOK_TOKEN = "whsec_za-z0WfOhF811J4ioFVRCkP4iw60HnKbeXyuDncDc-0";
+const WEBHOOK_TOKEN = "whsec_za-z0WfOhF811J4ioFVRCkP4iw60HnKbeXyuDncDc-0";
 
-// Rota inicial
-app.get("/", (req, res) => {
-  res.send("API de webhooks rodando 🚀");
+app.get("/", (_req, res) => {
+  res.send("API de webhook rodando 🚀");
 });
 
-// Webhook de pagamentos
-app.post("/webhook/payments", (req, res) => {
-  const token = req.headers["asaas-access-token"];
+app.post("/webhook/asaas", (req, res) => {
+  const headerToken =
+    req.headers["asaas-access-token"] ||
+    req.headers["x-webhook-token"];
 
-  if (token !== PAYMENT_WEBHOOK_TOKEN) {
+  const queryToken = req.query.token;
+  const receivedToken = headerToken || queryToken;
+
+  if (receivedToken !== WEBHOOK_TOKEN) {
     return res.status(401).json({
       success: false,
-      message: "Token inválido para pagamentos"
+      message: "Token inválido",
     });
   }
 
-  console.log("💰 Webhook de pagamentos recebido:");
+  console.log("📩 Webhook Asaas recebido:");
   console.log(JSON.stringify(req.body, null, 2));
 
   const event = req.body?.event;
@@ -32,48 +33,45 @@ app.post("/webhook/payments", (req, res) => {
     case "PAYMENT_CREATED":
       console.log("Cobrança criada");
       break;
-    case "PAYMENT_RECEIVED":
-      console.log("Pagamento recebido");
-      break;
+
     case "PAYMENT_CONFIRMED":
       console.log("Pagamento confirmado");
       break;
+
+    case "PAYMENT_RECEIVED":
+      console.log("Pagamento recebido");
+      break;
+
     case "PAYMENT_OVERDUE":
       console.log("Pagamento em atraso");
       break;
-    default:
-      console.log("Evento de pagamento não tratado:", event);
+
+    case "PAYMENT_REFUNDED":
+      console.log("Pagamento reembolsado");
       break;
-  }
 
-  return res.status(200).json({ success: true });
-});
+    case "PAYMENT_DELETED":
+      console.log("Pagamento removido");
+      break;
 
-// Webhook de assinaturas
-app.post("/webhook/subscriptions", (req, res) => {
-  const token = req.headers["asaas-access-token"];
+    case "PAYMENT_SUBSCRIPTION_CANCELLED":
+      console.log("Assinatura cancelada por evento de pagamento");
+      break;
 
-  if (token !== SUBSCRIPTION_WEBHOOK_TOKEN) {
-    return res.status(401).json({
-      success: false,
-      message: "Token inválido para assinaturas"
-    });
-  }
-
-  console.log("🔁 Webhook de assinaturas recebido:");
-  console.log(JSON.stringify(req.body, null, 2));
-
-  const event = req.body?.event;
-
-  switch (event) {
     case "SUBSCRIPTION_CREATED":
       console.log("Assinatura criada");
       break;
+
     case "SUBSCRIPTION_UPDATED":
       console.log("Assinatura atualizada");
       break;
+
+    case "SUBSCRIPTION_DELETED":
+      console.log("Assinatura deletada");
+      break;
+
     default:
-      console.log("Evento de assinatura não tratado:", event);
+      console.log("Evento não tratado:", event);
       break;
   }
 
@@ -83,5 +81,6 @@ app.post("/webhook/subscriptions", (req, res) => {
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
+  console.log(Servidor rodando na porta ${PORT});
 });
+[14:20, 22/04/2026] Lucas Lino: Use este código corrigido: 1 webhook ativo, 1 token, 1 endpoint, que é o formato compatível com o sistema atual
